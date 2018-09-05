@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField,TextAreaField,SubmitField,BooleanField
-from wtfforms.validators import Required
+from wtforms.validators import Required
 
 class ContentForm(FlaskForm):
     content = TextAreaField('YOUR PITCH')
@@ -9,12 +9,6 @@ class ContentForm(FlaskForm):
 class CommentForm(FlaskForm):
     comment_id = TextAreaField('WRITE COMMENT')
     submit = SubmitField('SUBMIT')
-
-
-class CommentForm(FlaskForm):
-    comment_id = TextAreaField('WRITE COMMENT')
-    submit = SubmitField('SUBMIT')
-
 
 class PitchForm(FlaskForm):  # create a class that inherits from FlaskForm class
     name = StringField('Authors Name', validators=[Required()])
