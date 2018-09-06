@@ -2,8 +2,8 @@ import os
 from flask import Flask
 
 class Config:
-
-    pass
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://a:mango@localhost/minute'
+    SECRET_KEY = 'grESrtgb284gvfnfd58437bhb'
 
 class ProdConfig(Config):
     pass
