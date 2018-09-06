@@ -1,5 +1,4 @@
-from app import create_app, db
-from app.models import User
+from . import db
 
 
 class User(db.Model):
@@ -11,10 +10,11 @@ class User(db.Model):
         return f'User {self.username}'
 
 
-@manager.shell
-def make_shell_context():
-    return dict(app=app, db=db, User=User)
+class Role(db.Model):
+    __tablename__ = 'roles'
 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
 
-if __name__ == '__main__':
-    manager.run()
+    def __repr__(self):
+        return f'User {self.name}'
