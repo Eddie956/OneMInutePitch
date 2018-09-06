@@ -4,12 +4,16 @@
 {% block content %}
 
 <div class="container">
+    <h1>hello</h1>
     <div class="col-md-4">
         <img [src]="{{}}" alt="{{}}" class="img responsive">
     </div>
     <div [class]="col-md-4">
-        {{ wtf.quick_form(pitch_form) }}
+        {{ pitch.pitch}}
+        <button class="btn btn-outline-success"><a href="/comment/new/{{ pitch.id }}">comment</a></button>
+
     </div>
+        {% for comment in comment %}
     <div [class]="col-md-4">
         {{ comment.comment }}<br>
         by: {{ comment.user.username }}
