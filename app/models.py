@@ -53,18 +53,18 @@ class Comment(db.Model):
         return f'Pitch {self.id}'
     
 
-# class Like(db.Model):
-#     __table__name = 'likes'
-#     '''
-#     class that takes number of upvote in aparticular pitch
-#     '''
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.integer, db.Foreign_key('users_id'))
-#     pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
-#     likes = db.Column(db.Integer,default=1)
+class Like(db.Model):
+    __table__name = 'likes'
+    '''
+    class that takes number of upvote in aparticular pitch
+    '''
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.integer, db.Foreign_key('users_id'))
+    pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
+    likes = db.Column(db.Integer,default=1)
 
-#     def __repr__(self):
-#         return f'Pitch {self.id}'
+    def __repr__(self):
+        return f'Pitch {self.id}'
 
 
 # class Dislike(db.Model):
