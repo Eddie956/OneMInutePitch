@@ -36,7 +36,17 @@ def pitch(id):
 
 
 
-@main.route('/new/pitch/comment/<''>)
+@main.route('/new/pitch')
 @login_required
+def new_pitch():
+    '''
+    route to view new pitches
+    '''
 
+
+@main.route('/new/pitch/comment/<'int: pitch_id'> )
+@login_required
 def comment():
+    '''
+    route to view new comment
+    '''
