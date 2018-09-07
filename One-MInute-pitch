@@ -1,8 +1,0 @@
-ew column in our User model role_id and we give it an Integertype
-pass in the db.ForeignKey class and pass in 'roles.id' argument
-
-
-J
-
-\
-
