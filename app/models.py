@@ -33,24 +33,24 @@ class Pitch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.integer,db.Foreign_key('users_id'))
     category = db.Column(db.String(255))
-    content = db.Column(db.String(255))
+    pitch = db.Column(db.String(255))
 
     def __repr__(self):
         return f'Pitch {self.id}'
 
 
-# class Comment(db.Model):
-#     __table__name = 'comment'
-#     '''
-#     class that define my comments
-#     '''
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.integer, db.Foreign_key('users_id'))
-#     pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
-#     content = db.Column(db.String(255))
+class Comment(db.Model):
+    __table__name = 'comment'
+    '''
+    class that define my comments
+    '''
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.integer, db.Foreign_key('users_id'))
+    pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
+    pitch = db.Column(db.String(255))
 
-#     def __repr__(self):
-#         return f'Pitch {self.id}'
+    def __repr__(self):
+        return f'Pitch {self.id}'
     
 
 # class Like(db.Model):
