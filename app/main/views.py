@@ -23,7 +23,7 @@ def new_pitch():
     '''
 
 
-@main.route('/new/comment/<'int: pitch_id'> )
+@main.route('/new/comment/<int: pitch_id'> )
 @login_required
 def comment(pitch_id):
     '''
@@ -31,7 +31,7 @@ def comment(pitch_id):
     '''
 
 
-@main.route('/new/pitch/upvote/<'int: pitch_id'> )
+@main.route('/new/pitch/upvote/<int: pitch_id>/upvote')
 @login_required
 def upvote(pitch_id):
     '''
@@ -39,7 +39,7 @@ def upvote(pitch_id):
     '''
 
 
-@main.route('/new/pitch/downvote/<'int: pitch_id'> )
+@main.route('/new/pitch/downvote/<int: pitch_id>//downvote' )
 @login_required
 def downvote(pitch_id):
     '''
