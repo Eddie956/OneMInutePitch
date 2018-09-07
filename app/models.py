@@ -10,6 +10,11 @@ class User(UserMixin,db.Model):
     email = db.Column(db.String(255), unique=True, index=True)
     pass_secure = db.Column(db.String(255))
 
+    pitch =db.relationship('Pitch', backref='user', lazy='dynamic')
+    comment = db.relationship('Comment', backref='user', lazy='dynamic')
+    like = db.relationship('Like', backref='user', lazy='dynamic')
+    dislike = db.relationship('Dislike', backref='user', lazy='dynamic')
+
     @property
     def password(self):
             raise AttributeError('You cannot read the password attribute')
@@ -35,6 +40,10 @@ class Pitch(db.Model):
     category = db.Column(db.String(255))
     pitch = db.Column(db.String(255))
 
+    comment = db.relationship('Pitch', backref='user', lazy='dynamic')
+    like = db.relationship('Like', backref='user', lazy='dynamic')
+    dislike = db.relationship('Dislike', backref='user', lazy='dynamic')
+
     def __repr__(self):
         return f'Pitch {self.id}'
 
@@ -48,6 +57,9 @@ class Comment(db.Model):
     user_id = db.Column(db.integer, db.Foreign_key('users_id'))
     pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
     pitch = db.Column(db.String(255))
+
+    like = db.relationship('Dislike', backref='user', lazy='dynamic')
+    dislike = db.relationship('Like', backref='user', lazy='dynamic')
 
     def __repr__(self):
         return f'Pitch {self.id}'
