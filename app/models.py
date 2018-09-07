@@ -1,7 +1,7 @@
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-
+from . import login_manager
 
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
@@ -9,7 +9,6 @@ class User(UserMixin,db.Model):
     username = db.Column(db.String(255))
     email = db.Column(db.String(255), unique=True, index=True)
     pass_secure = db.Column(db.String(255))
-
     pitch =db.relationship('Pitch', backref='user', lazy='dynamic')
     comment = db.relationship('Comment', backref='user', lazy='dynamic')
     like = db.relationship('Like', backref='user', lazy='dynamic')
@@ -31,63 +30,61 @@ class User(UserMixin,db.Model):
         return f'User {self.username}'
 
 class Pitch(db.Model):
-    __table__name = 'pitches'
+    __tablename__ = 'pitches'
     '''
     class that define my pitches
     '''
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.integer,db.Foreign_key('users_id'))
+    user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     category = db.Column(db.String(255))
     pitch = db.Column(db.String(255))
 
-    comment = db.relationship('Pitch', backref='user', lazy='dynamic')
-    like = db.relationship('Like', backref='user', lazy='dynamic')
-    dislike = db.relationship('Dislike', backref='user', lazy='dynamic')
+    comment = db.relationship('Comment', backref='pitch', lazy='dynamic')
+    like = db.relationship('Like', backref='pitch', lazy='dynamic')
+    dislike = db.relationship('Dislike', backref='pitch', lazy='dynamic')
 
     def __repr__(self):
         return f'Pitch {self.id}'
 
 
 class Comment(db.Model):
-    __table__name = 'comment'
+    __tablename__ = 'comment'
     '''
     class that define my comments
     '''
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.integer, db.Foreign_key('users_id'))
-    pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
-    pitch = db.Column(db.String(255))
+    user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer,db.ForeignKey('pitches.id'))
+    comment = db.Column(db.String(255))
 
-    like = db.relationship('Dislike', backref='user', lazy='dynamic')
-    dislike = db.relationship('Like', backref='user', lazy='dynamic')
 
     def __repr__(self):
-        return f'Pitch {self.id}'
+        return f'Comment {self.id}'
     
 
 class Like(db.Model):
-    __table__name = 'likes'
+    __tablename__ = 'likes'
     '''
     class that takes number of upvote in aparticular pitch
     '''
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.integer, db.Foreign_key('users_id'))
-    pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
+    user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer,db.ForeignKey('pitches.id'))
     likes = db.Column(db.Integer,default=1)
 
     def __repr__(self):
-        return f'Pitch {self.id}'
+        return f'Like {self.id}'
 
 
 class Dislike(db.Model):
-    __table__name = 'dislike'
+    __tablename__ = 'dislike'
     '''
     class that define my comments
     '''
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.integer, db.Foreign_key('users_id'))
-    pitch_id = db.Column(db.integer, db.Foreign_key('pitches_id'))
+    user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+    pitch_id = db.Column(db.Integer,db.ForeignKey('pitches.id'))
     dislikes = db.Column(db.Integer,default=1)
 
     def __repr__(self):
-        return f'Pitch {self.id}'
+        return f'Dislike {self.id}'
