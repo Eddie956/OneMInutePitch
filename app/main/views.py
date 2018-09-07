@@ -44,9 +44,18 @@ def new_pitch():
     '''
 
 
-@main.route('/new/pitch/comment/<'int: pitch_id'> )
+@main.route('/new/comment/<'int: pitch_id'> )
 @login_required
-def comment():
+def comment(pitch_id):
     '''
     route to view new comment
     '''
+
+
+@main.route('/new/pitch/upvote/<'int: pitch_id'> )
+@login_required
+def new_pitch(pitch_id):
+    '''
+    route to upvote pitches
+    '''
+
