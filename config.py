@@ -9,6 +9,8 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get("mutugieddie3@gmail.com")
     MAIL_PASSWORD = os.environ.get("winnieeddie321")
+    SIMPLEMDE_JS_IIFE = True
+    SIMPLEMDE_USE_CDN = True
 class ProdConfig(Config):
     pass
 
@@ -27,6 +29,6 @@ class TestConfig(Config):
 config_options = {
 'development':DevConfig,
 'production':ProdConfig
-'test': TestConfig
+# 'test': TestConfig
 
 }
