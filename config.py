@@ -3,7 +3,7 @@ from flask import Flask
 
 class Config:
     SECRET_KEY = 'grESrtgb284gvfnfd58437bhb'
-
+    UPLOADED_PHOTOS_DEST = 'app/static/photos'
 class ProdConfig(Config):
     pass
 
