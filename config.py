@@ -19,9 +19,14 @@ class DevConfig(Config):
     DEBUG = True
 
 class TestConfig(Config):
-    pass
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://a:mango@localhost/oneminute'
+
+    DEBUG = True
+
 
 config_options = {
 'development':DevConfig,
 'production':ProdConfig
+'test': TestConfig
+
 }

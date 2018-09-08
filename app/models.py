@@ -45,11 +45,15 @@ class Pitch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     category = db.Column(db.String(255))
-    pitch = db.Column(db.String(255))
+    pitch = db.Column(db.DateTime, default=datetime.utcnow)
 
     comment = db.relationship('Comment', backref='pitch', lazy='dynamic')
     like = db.relationship('Like', backref='pitch', lazy='dynamic')
     dislike = db.relationship('Dislike', backref='pitch', lazy='dynamic')
+
+    def save_pitch(self):
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return f'Pitch {self.id}'
@@ -65,6 +69,9 @@ class Comment(db.Model):
     pitch_id = db.Column(db.Integer,db.ForeignKey('pitches.id'))
     comment = db.Column(db.String(255))
 
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return f'Comment {self.id}'
@@ -80,6 +87,10 @@ class Like(db.Model):
     pitch_id = db.Column(db.Integer,db.ForeignKey('pitches.id'))
     likes = db.Column(db.Integer,default=1)
 
+    def save_like(self):
+        db.session.add(self)
+        db.session.commit()
+
     def __repr__(self):
         return f'Like {self.id}'
 
@@ -93,6 +104,10 @@ class Dislike(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     pitch_id = db.Column(db.Integer,db.ForeignKey('pitches.id'))
     dislikes = db.Column(db.Integer,default=1)
+
+    def save_Dislike(self):
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return f'Dislike {self.id}'
