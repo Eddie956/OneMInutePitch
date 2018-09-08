@@ -15,3 +15,8 @@ class PitchForm(FlaskForm):  # create a class that inherits from FlaskForm class
     categoy = TextAreaField('Pitch', validators=[Required()])
     pitch = TextAreaField('Pitch', validators=[Required()])
     submit = SubmitField('Submit')
+
+
+class UpdateProfile(FlaskForm):
+    bio = TextAreaField('Tell us about you.', validators=[Required()])
+    submit = SubmitField('Submit')
