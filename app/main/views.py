@@ -20,6 +20,16 @@ def index():
     return render_template("index.html", title=title)
 
 
+@main.route('/user/<uname>')
+def profile(uname):
+    user = User.query.filter_by(username=uname).first()
+
+    if user is None:
+        abort(404)
+
+    return render_template("profile/profile.html", user=user)
+
+
 @main.route('/user/<uname>/update', methods=['GET', 'POST'])
 @login_required
 def update_profile(uname):
@@ -51,17 +61,26 @@ def update_pic(uname):
         db.session.commit()
     return redirect(url_for('main.profile', uname=uname, id_user=user.id))
 
-@main.route('/new/pitch')
+
+@main.route('/new/pitch', methods=['GET', 'POST'])
 @login_required
 def new_pitch():
-    '''
-    route to view new pitches
-    '''
-    pitch = Pitch.query.get(id)
-    if pitch is None:
-        abort(404)
-    format_pitch = markdown2.markdown(pitch.new_pitch, extras=["code-friendly", "fenced-code-blocks"])
-    return render_template('pitch.html', pitch=pitch, format_pitch=format_pitch)
+    pitch_form = PitchForm()
+
+    if pitch_form.validate_on_submit():
+        name = pitch_form.name.data
+        pitch = pitch_form.pitch.data
+        category = pitch_form.category.data
+
+        new_pitch = Pitch(pitch_form=pitch,category=category,name=name)
+        new_pitch.save_pitch()
+
+        return redirect(url_for('main.new_pitch'))
+
+    # pitch = Pitch.pitches()
+
+    title = 'Minute'
+    return render_template('new_pitch.html', title=title, pitch_form=pitch_form)
 
 
 @main.route('/new/comment/<int:pitch_id>')
@@ -76,9 +95,9 @@ def comment(pitch_id):
 def category(cat):
     category = Pitch.get_category(category)
 
-    title = f'{category} category | One MInute Pitch'
-
-    return render_template('category.html', title=title, category=category)
+    title =  'category' 
+    pitch_in_category = Pitch.get_pitch
+    return render_template('category.html', title=title, category=category,pitches=pitch_in_category)
 
 
 @main.route('/pitch/<int:id>', methods=['GET', 'POST'])
@@ -103,24 +122,6 @@ def pitch(id):
     return render_template('pitch.html', pitch=pitch, comment_form=comment_form, comments=all_comments, title=title, like=like, dislike=dislike)
 
 
-@main.route('/dis', methods=['GET', 'POST'])
-@login_required
-def dis():
-    pitch_form = PitchForm()
-
-    if pitch_form.validate_on_submit():
-        pitch = pitch_form.pitch.data
-        category = pitch_form.my_category.data
-
-        new_pitch = Pitch(pitch_content=pitch, pitch_category=category, user=user)
-        new_pitch.save_pitch()
-
-        return redirect(url_for('main.dis'))
-
-    # pitches = Pitch.pitches()
-
-    title = 'Minute'
-    return render_template('dis.html', title=title, pitch_form=pitch_form)
 
 @main.route('/pitch/like/<int:pitch_id>/like')
 @login_required

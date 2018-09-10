@@ -1,6 +1,6 @@
 from . import auth
 from flask import render_template, redirect, url_for, flash, request
-from ..models import User
+from ..models import User,Pitch,Comment
 from flask_login import login_user, logout_user, login_required
 from .forms import LoginForm, RegistrationForm
 from .. import db
@@ -29,7 +29,7 @@ def register():
         user = User(email=form.email.data,username=form.username.data, password=form.password.data)
         db.session.add(user)
         db.session.commit()
-        mail_message("Welcome to oneminute pitch","email/welcome_user", user.email, user=user)
+        mail_message("Welcome to oneminute pitch","email/welcome_username", user.email, user=name)
         return redirect(url_for('auth.login'))
         title = "Registration account"
     return render_template('auth/register.html', registration_form=form)

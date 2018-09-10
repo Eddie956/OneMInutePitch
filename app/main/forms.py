@@ -12,7 +12,7 @@ class CommentForm(FlaskForm):
 
 class PitchForm(FlaskForm):  # create a class that inherits from FlaskForm class
     name = StringField('Authors Name', validators=[Required()])
-    categoy = TextAreaField('Pitch', validators=[Required()])
+    category = TextAreaField('Category', validators=[Required()])
     pitch = TextAreaField('Pitch', validators=[Required()])
     submit = SubmitField('Submit')
 

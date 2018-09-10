@@ -7,7 +7,7 @@
                 <h1>Welcome</h1>
                 <h2>One Minute Pitch</h2>
                 {% if current_user.is_authenticated%}
-                <a id="start" class="btn btn-danger animated infinite flash" href="{{url_for('main.dis')}}">View
+                <a id="start" class="btn btn-danger animated infinite flash" href="{{url_for('main.category')}}">View
                     Pitches</a>
                 {% else %}
                 <a id="start" class="btn btn-danger animated infinite flash" href="{{url_for('auth.login')}}">Sign In</a>
