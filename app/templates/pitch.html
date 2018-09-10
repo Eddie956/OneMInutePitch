@@ -1,23 +1,28 @@
-{% extends 'base.html'%}
-{% import "bootstrap/wtf.html" as wtf %}
-
-{% block content %}
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'macros.html' as macro %}
 
 <div class="container">
-    <h1>hello</h1>
-    <div class="col-md-4">
-        <img [src]="{{}}" alt="{{}}" class="img responsive">
+    <div class="row text-center">
+        <div class="col">
+        {% if pitch.user.profile_pic_path %}
+        <img src="{{url_for('static',filename = pitch.user.profile_pic_path)}}" alt="" class="img-thumbnail">
+        {% else %}
+        <img src="{{url_for('static',filename = 'photos/avatar.png')}}" alt="" class="img-thumbnail">
+        {% endif %}
+        <a href="/user/{{pitch.user.username}}&{{pitch.user.id}}">{{pitch.user.username|capitalize}}</a>
+        <p class="pitch-content">{{pitch.pitch_content}}</p>
+        <hr>
+        {{wtf.quick_form(comment_form)}}
+            <li class="list-inline-item"><a class="btn btn-primary" href="{{url_for('main.like',id=pitch.id)}}"><i class="fa fa-thumbs-up fa-2x"></i></a></li>
+            <li class="list-inline-item">{{likes|length}}</li>
+            <br><br>
+            <li class="list-inline-item"><a class="btn btn-warning" href="{{url_for('main.dislike',id=pitch.id)}}"><i class="fa fa-thumbs-down fa-2x"></i>
+                </a></li>
+            <li class="list-inline-item">{{dislikes|length}}</li>
+            <hr>
+            {{macro.displayComments(comments)}}     
+        </div>
     </div>
-    <div [class]="col-md-4">
-        {{ pitch.pitch}}
-        <button class="btn btn-outline-success"><a href="/comment/new/{{ pitch.id }}">comment</a></button>
-
-    </div>
-        {% for comment in comment %}
-    <div [class]="col-md-4">
-        {{ comment.comment }}<br>
-        by: {{ comment.user.username }}
-    </div>
-
 </div>
 {% endblock %}

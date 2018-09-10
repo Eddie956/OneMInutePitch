@@ -1,3 +1,12 @@
+{% extends "base.html" %}
+
 {% block content %}
-<h1>WHOOOPS we can't find that page</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 four">
+            <img src="/static/nf.gif" alt="">
+            <p><a href="{{ url_for('main.index')}}" class="btn btn-outline-danger btn-lg">Back</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}

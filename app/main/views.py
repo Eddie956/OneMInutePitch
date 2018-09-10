@@ -1,9 +1,10 @@
-from flask import render_template, request, redirect, url_for, abort
+from flask import render_template, request, redirect, url_for,flash, abort
 from . import main
 from .forms import PitchForm, UpdateProfile,ContentForm,CommentForm
-from flask_login import login_required
-from ..models import  User
+from flask_login import login_required,current_user
+from ..models import  User,Pitch,Comment,Like,Dislike,PhotoProfile
 from .. import db,photos
+import markdown2
 
 
 
@@ -34,9 +35,9 @@ def update_profile(uname):
         db.session.add(user)
         db.session.commit()
 
-        return redirect(url_for('main.update_profile', uname=user.username))
-
-    return render_template('profile/update.html', form=form)
+        return redirect(url_for('.update_profile', id_user=user.id, uname=user.username))
+    title = 'Update Bio'
+    return render_template('profile/update.html', title=title,form=form)
 
 
 @main.route('/user/<uname>/update/pic', methods=['POST'])
@@ -48,13 +49,19 @@ def update_pic(uname):
         path = f'photos/{filename}'
         user.profile_pic_path = path
         db.session.commit()
-    return redirect(url_for('main.profile', uname=uname))
+    return redirect(url_for('main.profile', uname=uname, id_user=user.id))
+
 @main.route('/new/pitch')
 @login_required
 def new_pitch():
     '''
     route to view new pitches
     '''
+    pitch = Pitch.query.get(id)
+    if pitch is None:
+        abort(404)
+    format_pitch = markdown2.markdown(pitch.new_pitch, extras=["code-friendly", "fenced-code-blocks"])
+    return render_template('pitch.html', pitch=pitch, format_pitch=format_pitch)
 
 
 @main.route('/new/comment/<int:pitch_id>')
@@ -65,17 +72,94 @@ def comment(pitch_id):
     '''
 
 
-@main.route('/new/pitch/upvote/<int:pitch_id>/upvote')
-@login_required
-def upvote(pitch_id):
-    '''
-    route to upvote pitches
-    '''
+@main.route('/category/<category>')
+def category(cat):
+    category = Pitch.get_category(category)
+
+    title = f'{category} category | One MInute Pitch'
+
+    return render_template('category.html', title=title, category=category)
 
 
-@main.route('/new/pitch/downvote/<int:pitch_id>//downvote' )
+@main.route('/pitch/<int:id>', methods=['GET', 'POST'])
 @login_required
-def downvote(pitch_id):
+def pitch(id):
+
+    pitch = Pitch.query.get(id)
+    comment_form = CommentForm()
+
+    if id is None:
+        abort(404)
+    if comment_form.validate_on_submit():
+        comment_form = comment_form.comment.data
+        new_comment = Comment(comment_content=comment_data,pitch_id=id, user=users)
+        new_comment.save_comment()
+        return redirect(url_for('main.pitch', id=id))
+    all_comments = Comment.get_comments(id)
+    like = Like.get_votes(id)
+    dislike = Dislike.get_downvotes(id)
+
+    title = 'Comment'
+    return render_template('pitch.html', pitch=pitch, comment_form=comment_form, comments=all_comments, title=title, like=like, dislike=dislike)
+
+
+@main.route('/dis', methods=['GET', 'POST'])
+@login_required
+def dis():
+    pitch_form = PitchForm()
+
+    if pitch_form.validate_on_submit():
+        pitch = pitch_form.pitch.data
+        category = pitch_form.my_category.data
+
+        new_pitch = Pitch(pitch_content=pitch, pitch_category=category, user=user)
+        new_pitch.save_pitch()
+
+        return redirect(url_for('main.dis'))
+
+    # pitches = Pitch.pitches()
+
+    title = 'Minute'
+    return render_template('dis.html', title=title, pitch_form=pitch_form)
+
+@main.route('/pitch/like/<int:pitch_id>/like')
+@login_required
+def like(pitch_id):
     '''
-    route to view new pitches
+    route to view number of likes
     '''
+    get_pitches = Like.get_votes(id)
+    valid_string = f'{current_user.id}:{id}'
+
+    for pitch in get_pitches:
+        to_str = f'{pitch}'
+        print(valid_string+" "+to_str)
+        if valid_string == to_str:
+            return redirect(url_for('main.pitch', id=id))
+        else:
+            continue
+
+    like_pitch = Like(user=user, pitching_id=id)
+    like_pitch.save_vote()
+
+    return redirect(url_for('main.pitch', id=id))
+
+
+@main.route('/pitch/dislike/<int:pitch_id>//dislike' )
+@login_required
+def dislike(pitch_id):
+    '''
+    route to view number of dislikes
+    '''
+    get_pitches = Dislike.get_downvotes(id)
+    valid_string = f'{current_user.id}:{id}'
+    for get_pitch in get_pitches:
+        to_str = f'{get_pitch}'
+        print(valid_string+" "+to_str)
+        if valid_string == to_str:
+            return redirect(url_for('main.pitch', id=id))
+        else:
+            continue
+    dislike_pitch = Like(user=user, pitching_id=id)
+    dislike_pitch.save_vote()
+    return redirect(url_for('main.pitch', id=id))
