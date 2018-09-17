@@ -1,17 +1,15 @@
-from flask import render_template, request, redirect, url_for,flash, abort
+from flask import render_template, request, redirect, url_for, flash, abort
 from . import main
-from .forms import PitchForm, UpdateProfile,CategoryForm,CommentForm,ContentForm
-from flask_login import login_required,current_user
-from ..models import  User,Pitch,Comment,Like,Dislike,PhotoProfile,PitchCategory
-from .. import db,photos
+from .forms import PitchForm, UpdateProfile, CategoryForm, CommentForm, ContentForm
+from flask_login import login_required, current_user
+from ..models import User, Pitch, Comment, Like, Dislike, PhotoProfile, PitchCategory
+from .. import db, photos
 import markdown2
-
-
 
 
 @main.route('/')
 def index():
-    
+
     category = PitchCategory.get_categories()
     pitches = Pitch.query.order_by('-id').all()
     print(pitches)
@@ -22,7 +20,7 @@ def index():
 
 @main.route('/user/<uname>')
 def profile(uname):
-    
+
     user = User.query.filter_by(username=uname).first()
 
     if user is None:
@@ -48,7 +46,7 @@ def update_profile(uname):
 
         return redirect(url_for('.update_profile', id_user=user.id, uname=user.username))
     title = 'Update Bio'
-    return render_template('profile/update.html', title=title,form=form)
+    return render_template('profile/update.html', title=title, form=form)
 
 
 @main.route('/user/<uname>/update/pic', methods=['POST'])
@@ -69,21 +67,20 @@ def pitch():
     form = PitchForm()
     category = PitchCategory.query.filter_by(category=category).first()
 
-    
     if form.validate_on_submit():
         content = form.content.data
-        pitch = Pitch(content=content, category_id=category.id, user_id=current_user.id)
+        pitch = Pitch(content=content, category_id=category.id,
+                      user_id=current_user.id)
         pitch.save_pitch()
         return redirect(url_for('.category', id=category.id))
 
-    return render_template('pitch.html', form=form, category=category)
-
+    return render_template('comment.html', form=form, category=category)
 
 
 @main.route('/new/comment/<int:pitch_id>')
 @login_required
 def new_comment(pitch_id):
-    comment_form= CommentForm()
+    comment_form = CommentForm()
 
     if comment_form.validate_on_submit():
         comment = comment_form.comment.data
@@ -97,12 +94,13 @@ def new_comment(pitch_id):
 
     comment = Comment.get_comment()
     title = 'comment'
-    return render_template('pitch.html', title=title, pitch_form=pitch, pitches=pitches,comment=comment)
+    return render_template('pitch.html', title=title, pitch_form=pitch, pitches=pitches, comment=comment)
+
 
 @main.route('/category/<int:id>')
 def category(id):
     category = PitchCategory.query.get(id)
-    
+
     pitches = Pitch.get_pitches(id)
     return render_template('category.html', pitches=pitches, category=category)
 
@@ -110,7 +108,7 @@ def category(id):
 @main.route('/add/category', methods=['GET', 'POST'])
 @login_required
 def add_category():
-    
+
     form = CategoryForm()
 
     if form.validate_on_submit():
@@ -127,7 +125,7 @@ def add_category():
 @main.route('/view-pitch/<int:id>', methods=['GET', 'POST'])
 @login_required
 def new_pitch(id):
-    
+
     add_category = PitchCategory.get_categories()
     pitches = Pitch.query.get(id)
     pitches = Pitch.query.filter_by(id=id).all()
@@ -140,7 +138,7 @@ def new_pitch(id):
 @main.route('/comment/<int:id>', methods=['GET', 'POST'])
 @login_required
 def comment(id):
-    
+
     form = CommentForm()
     title = 'comment'
     pitches = Pitch.query.filter_by(id=id).first()
@@ -150,7 +148,8 @@ def comment(id):
 
     if form.validate_on_submit():
         comment = form.comment.data
-        add_comment = Comment(comment=comment, user_id=current_user.id, pitches_id=pitches.id)
+        add_comment = Comment(
+            comment=comment, user_id=current_user.id, pitches_id=pitches.id)
         add_comment.save_comment()
         return redirect(url_for('.new_pitch', id=pitches.id))
 
@@ -180,7 +179,7 @@ def like(pitch_id):
     return redirect(url_for('main.pitch', id=id))
 
 
-@main.route('/pitch/dislike/<int:pitch_id>//dislike' )
+@main.route('/pitch/dislike/<int:pitch_id>//dislike')
 @login_required
 def dislike(pitch_id):
     '''
@@ -198,36 +197,3 @@ def dislike(pitch_id):
     dislike_pitch = Like(user=user, pitching_id=id)
     dislike_pitch.save_vote()
     return redirect(url_for('main.pitch', id=id))
-
-
-# @main.route('/sports/pitches')
-# def sports():
-
-#     pitches = Pitch.get_all_pitches()
-#     title = 'Sports'
-#     return render_template('sports.html', title=title, pitches=pitches)
-
-# @main.route('/entertainment/pitches')
-# def entertainment():
-
-#     pitches=Pitch.get_all_pitches()
-#     title='Sports'
-#     return render_template('entertainment.html', title=title,pitches=pitches)
-
-
-# @main.route('/promotion/pitches')
-# def promotions():
-
-#     pitches=Pitch.get_all_pitches()
-#     title='Sports'
-#     return render_template('promotion.html', title=title, pitches=pitches)
-
-
-# @main.route('/fun/pitches')
-# def fun():
-
-#     pitches=Pitch.get_all_pitches()
-#     title='Sports'
-#     return render_template('fun.html', title=title, pitches=pitches)
-
-
