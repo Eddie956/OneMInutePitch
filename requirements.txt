@@ -38,7 +38,7 @@ packaging==17.1
 pguard==0.3.0
 psycopg2==2.7.5
 pycodestyle==2.4.0
-Pygments==2.2.0
+Pygments==2.7.4
 pylint==2.1.1
 pyparsing==2.2.0
 python-dateutil==2.7.3
